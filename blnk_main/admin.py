@@ -4,3 +4,4 @@ from .models import *
 
 admin.site.register(Loan)
 admin.site.register(Loan_app)
+admin.site.register(Customer)

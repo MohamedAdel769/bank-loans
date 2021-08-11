@@ -1,0 +1,34 @@
+{% extends "blnk_main/base.html" %} {% block content %} {% for app in apps %}
+
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <h2 class="mr-2">Duration: {{ app.loan.duration }} Months</h2>
+      <p class="text-muted">
+        Min: {{ app.loan.min_val }} EGP - Max: {{ app.loan.max_val }} EGP
+      </p>
+    </div>
+    <p><b>Interest:</b> {{ app.loan.interest_rate }}%</p>
+    <p><b>Amount:</b> {{ app.amount }} EGP</p>
+    <p>
+      <b>Application Type:</b>
+      {{ app.app_type }}
+    </p>
+    <p>
+      <b>Customer Name:</b>
+      {{ app.user.first_name }} {{ app.user.last_name }}
+    </p>
+    <p>
+      <b>Company:</b>
+      {{ app.user.customer.company_name }}
+    </p>
+    <p>
+      <b>Salary:</b>
+      {{ app.user.customer.salary }} EGP
+    </p>
+    <button type="button" class="btn btn-outline-success">Approve</button>
+    <button type="button" class="btn btn-outline-danger">Decline</button>
+  </div>
+</article>
+
+{% endfor %} {% endblock content%}

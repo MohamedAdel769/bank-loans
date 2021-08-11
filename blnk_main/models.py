@@ -12,7 +12,7 @@ class Customer(models.Model):
     salary = models.IntegerField(null=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.salary}"
+        return f"{self.user.first_name} {self.user.last_name} - {self.salary}"
 
 
 class Loan(models.Model):
@@ -30,10 +30,9 @@ class Loan_app(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE)
-    app_type = models.CharField(max_length=10, choices=types)
+    app_type = models.CharField(max_length=10, choices=types, default='Loan')
     amount = models.IntegerField()
     status = models.BooleanField(default=False)
-    loan_term = models.IntegerField()
 
 
 class Banker(models.Model):
