@@ -33,8 +33,3 @@ class Loan_app(models.Model):
     app_type = models.CharField(max_length=10, choices=types, default='Loan')
     amount = models.IntegerField()
     status = models.BooleanField(default=False)
-
-
-class Banker(models.Model):
-    total_loans = models.IntegerField()
-    total_funds = models.IntegerField()
