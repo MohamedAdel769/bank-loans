@@ -1,0 +1,21 @@
+{% extends "blnk_main/base.html" %} {% block content %} {% for loan in loans %}
+
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <h2 class="mr-2">Duration: {{ loan.duration }} Months</h2>
+      <p class="text-muted">
+        Min: {{ loan.min_val }} EGP - Max: {{ loan.max_val }} EGP
+      </p>
+    </div>
+    <p class="article-content">Interest: {{ loan.interest_rate }}%</p>
+    <a
+      class="btn btn-outline-primary"
+      href="{% url 'application' loan.id %}"
+      role="button"
+      >Apply for this loan</a
+    >
+  </div>
+</article>
+
+{% endfor %} {% endblock content%}
