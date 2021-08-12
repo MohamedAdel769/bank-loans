@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.views import APIView
 from .serializers import LoanSerializer
+from django.urls import reverse
 
 
 def display_message(request, message, extra_tags='', redirectRoute=None):
@@ -34,6 +35,7 @@ def index(request):
 def banker_home(request):
     if not request.user.groups.filter(name='bankers').exists():
         raise PermissionDenied
+
     context = {
         'title': 'banker',
         'apps': Loan_app.objects.all()
@@ -41,6 +43,7 @@ def banker_home(request):
     return render(request, "blnk_main/banker_home.html", context)
 
 
+@login_required
 def add_application(request, loan_id):
     current_user = request.user
     if not Customer.objects.filter(user=current_user).exists():
@@ -53,14 +56,21 @@ def add_application(request, loan_id):
             return display_message(
                 request, "You already have an application.", 'danger', 'blnk_main:index')
         if Bank_loan.objects.filter(customer=current_user.customer).exists():
-            bank_loan = Bank_loan.objects.get(customer=current_user.customer)
-            if bank_loan.loan.loan_type == 'Loans':
-                return display_message(
-                    request, "You already have an active loan.", 'danger', 'blnk_main:index')
+            bank_loans = Bank_loan.objects.filter(
+                customer=current_user.customer)
+            for bank_loan in bank_loans:
+                if bank_loan.loan.loan_type == 'Loans':
+                    return display_message(
+                        request, "You already have an active loan.", 'danger', 'blnk_main:index')
 
         form = LoanAppForm(request.POST)
         if form.is_valid():
             amount = form.cleaned_data.get('amount')
+
+            if amount < selected_loan.min_val or amount > selected_loan.max_val:
+                display_message(
+                    request, "Please enter a valid amount.", 'danger')
+                return redirect(reverse('blnk_main:application', kwargs={'loan_id': loan_id}))
 
             Loan_app.objects.create(
                 user=current_user, loan=selected_loan, amount=amount)
@@ -77,6 +87,7 @@ def add_application(request, loan_id):
     return render(request, "blnk_main/application.html", context)
 
 
+@login_required
 def customer_info(request):
     if request.method == 'POST':
         form = CustomerForm(request.POST)
@@ -121,8 +132,12 @@ def app_info(request):
 @login_required
 def active_apps(request):
     current_user = request.user
-    app = current_user.customer.active_loans.first()
-    if app is None:
+    try:
+        app = current_user.customer.active_loans.first()
+        if app is None:
+            return display_message(request, 'You do not have any active applications yet.', 'danger', 'blnk_main:index')
+
+    except:
         return display_message(request, 'You do not have any active applications yet.', 'danger', 'blnk_main:index')
 
     context = {

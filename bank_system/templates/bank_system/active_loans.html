@@ -4,13 +4,13 @@
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata mb-3">
-      <h2 class="mr-2">Duration: {{ loan.loan_info.duration }} Months</h2>
+      <h2 class="mr-2">Duration: {{ loan.loan.duration }} Months</h2>
       <p class="text-muted">
-        Min: {{ loan.loan_info.min_val }} EGP - Max: {{ loan.loan_info.max_val}}
-        EGP
+        Min: {{ loan.loan.min_val }} EGP - Max: {{ loan.loan.max_val}} EGP
       </p>
-      <p><b>Interest:</b> {{ loan.loan_info.interest_rate }}%</p>
+      <p><b>Interest:</b> {{ loan.loan.interest_rate }}%</p>
       <p><b>Amount:</b> {{ loan.amount }} EGP</p>
+      <p><b>Type:</b> {{ loan.loan.loan_type }}</p>
     </div>
     <p>
       <b>Customer Name:</b>
