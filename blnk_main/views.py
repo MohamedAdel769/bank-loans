@@ -2,14 +2,22 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Customer, Loan, Loan_app
+from bank_system.models import Bank_loan
 from django.contrib.auth.decorators import login_required
 from .forms import CustomerForm, LoanAppForm
+from django.core.exceptions import PermissionDenied
+
+
+def display_message(request, message, extra_tags='', redirectRoute=None):
+    messages.info(request, message, extra_tags=extra_tags)
+    if redirectRoute is not None:
+        return redirect(redirectRoute)
 
 
 @login_required
 def index(request):
     if request.user.groups.filter(name='bankers').exists():
-        return redirect('banker_home')
+        return redirect('blnk_main:banker_home')
 
     context = {
         'loans': Loan.objects.all(),
@@ -20,7 +28,7 @@ def index(request):
 
 def banker_home(request):
     if not request.user.groups.filter(name='bankers').exists():
-        return redirect('index')
+        raise PermissionDenied
     context = {
         'title': 'banker',
         'apps': Loan_app.objects.all()
@@ -31,15 +39,17 @@ def banker_home(request):
 def add_application(request, loan_id):
     current_user = request.user
     if not Customer.objects.filter(user=current_user).exists():
-        return redirect('customer')
+        return redirect('blnk_main:customer')
 
     selected_loan = Loan.objects.get(id=loan_id)
     if request.method == 'POST':
         # check is customer has an application
         if Loan_app.objects.filter(user=current_user).exists():
-            messages.error(
-                request, 'You already have an application.', extra_tags='danger')
-            return redirect('index')
+            return display_message(
+                request, "You already have an application.", 'danger', 'blnk_main:index')
+        if Bank_loan.objects.filter(customer=current_user.customer).exists():
+            return display_message(
+                request, "You already have an active loan.", 'danger', 'blnk_main:index')
 
         form = LoanAppForm(request.POST)
         if form.is_valid():
@@ -50,7 +60,7 @@ def add_application(request, loan_id):
 
             messages.success(
                 request, f'Loan Application Submitted for {current_user.username}')
-            return redirect('index')
+            return redirect('blnk_main:index')
     else:
         form = LoanAppForm()
 
@@ -79,7 +89,7 @@ def customer_info(request):
 
             messages.success(
                 request, f'Profile updated for {current_user.username}')
-            return redirect('index')
+            return redirect('blnk_main:index')
     else:
         form = CustomerForm()
     return render(request, 'blnk_main/customer.html', {'form': form})
@@ -88,15 +98,23 @@ def customer_info(request):
 @login_required
 def app_info(request):
     current_user = request.user
+    if current_user.groups.filter(name='bankers').exists():
+        raise PermissionDenied
+
+    status = False
     try:
         app = Loan_app.objects.get(user=current_user)
     except:
-        messages.warning(
-            request, 'You do not have any applications yet.')
-        return redirect('index')
+        app = current_user.customer.active_loans.first()
+        if not app:
+            messages.warning(
+                request, 'You do not have any applications yet.')
+            return redirect('blnk_main:index')
+        status = True
 
     context = {
         'loan': app.loan,
-        'app': app
+        'app': app,
+        'status': status
     }
     return render(request, 'blnk_main/my_app.html', context)

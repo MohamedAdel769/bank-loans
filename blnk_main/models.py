@@ -32,4 +32,3 @@ class Loan_app(models.Model):
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE)
     app_type = models.CharField(max_length=10, choices=types, default='Loan')
     amount = models.IntegerField()
-    status = models.BooleanField(default=False)

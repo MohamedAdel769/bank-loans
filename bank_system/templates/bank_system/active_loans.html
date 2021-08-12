@@ -1,0 +1,30 @@
+{% extends "blnk_main/base.html" %} {% block content %}
+<h1 class="mb-4">Active Loans for QNB</h1>
+{% for loan in loans %}
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata mb-3">
+      <h2 class="mr-2">Duration: {{ loan.loan_info.duration }} Months</h2>
+      <p class="text-muted">
+        Min: {{ loan.loan_info.min_val }} EGP - Max: {{ loan.loan_info.max_val}}
+        EGP
+      </p>
+      <p><b>Interest:</b> {{ loan.loan_info.interest_rate }}%</p>
+      <p><b>Amount:</b> {{ loan.amount }} EGP</p>
+    </div>
+    <p>
+      <b>Customer Name:</b>
+      {{ loan.customer.user.first_name }} {{ loan.customer.user.last_name }}
+    </p>
+    <p>
+      <b>Company:</b>
+      {{ loan.customer.user.customer.company_name }}
+    </p>
+    <p>
+      <b>Salary:</b>
+      {{ loan.customer.user.customer.salary }} EGP
+    </p>
+  </div>
+</article>
+
+{% endfor %} {% endblock content%}

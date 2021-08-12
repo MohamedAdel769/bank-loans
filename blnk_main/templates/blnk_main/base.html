@@ -25,7 +25,7 @@
     <header class="site-header">
       <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
-          <a class="navbar-brand mr-4" href="{% url 'index' %}">Dashmala</a>
+          <a class="navbar-brand mr-4" href="{% url 'blnk_main:index' %}">Dashmala</a>
           <button
             class="navbar-toggler"
             type="button"
@@ -39,7 +39,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{% url 'index' %}">Home</a>
+              <a class="nav-item nav-link" href="{% url 'blnk_main:index' %}">Home</a>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
@@ -75,9 +75,20 @@
                 <h3> Guest </h3>
               {% endif %}
               <p class='text-muted'>Check features below.
-                <ul class="list-group">
-                  <a href="{% url 'myApplication' %}" class="list-group-item list-group-item-action">My Applications</a>
+                <!-- <ul class="list-group list-group-flush">
+                  <a href="{% url 'blnk_main:myApplication' %}" class="list-group-item list-group-item-action">My Applications</a>
                 </ul>
+                {% if user.username == 'banker' %}
+                <ul class="list-group">
+                  <a href="{% url 'bank_system:bankLoans' %}" class="list-group-item list-group-item-action">Bank Loans</a>
+                </ul>
+                {% endif %} -->
+                <div class="list-group list-group-flush">
+                  <a class="list-group-item" href="{% url 'blnk_main:myApplication' %}">My Applications</a>
+                  {% if user.username == 'banker' %}
+                  <a class="list-group-item" href="{% url 'bank_system:bankLoans' %}">Bank Loans</a>
+                  {% endif %}
+                </div>
               </p>
             </div>
           </div>
