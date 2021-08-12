@@ -16,10 +16,9 @@
       .post("filter_plans/", data)
       .then((respone) => {
         var loans = respone.data;
-        /* const plans = JSON.parse(loans); */
-        let link = document.getElementById("main-content").innerHTML;
         for (let i = 0; i < loans.length; i++) {
           let loan = loans[i];
+          var url = document.URL + "application/" + loan.id + "/";
           plans +=
             "<article class='media content-section'>" +
             "<div class='media-body'>" +
@@ -35,8 +34,11 @@
             "</div> <p class='article-content'>Interest: " +
             loan.interest_rate +
             "% </p>" +
-            link +
-            " </div> </article>";
+            "<a class='btn btn-outline-primary'" +
+            "href=" +
+            url +
+            " role='button'> Apply</a>" +
+            "</div> </article>";
         }
 
         document.getElementById("main-content").innerHTML = plans;
@@ -60,12 +62,23 @@
 
 <div id="main-content">
   {% for loan in loans %}
-  <a
-    href="{% url 'blnk_main:application' loan.id %}"
-    class="loan-id btn btn-outline-primary"
-  >
-    Apply for this loan
-  </a>
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <h2 class="mr-2">Duration: {{ loan.duration }} Months</h2>
+        <p class="text-muted">
+          Min: {{ loan.min_val }} EGP - Max: {{ loan.max_val }} EGP
+        </p>
+      </div>
+      <p class="article-content">Interest: {{ loan.interest_rate }}%</p>
+      <a
+        class="btn btn-outline-primary"
+        href="{% url 'blnk_main:application' loan.id %}"
+        role="button"
+        >Apply</a
+      >
+    </div>
+  </article>
   {% endfor %}
 </div>
 

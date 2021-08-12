@@ -53,8 +53,10 @@ def add_application(request, loan_id):
             return display_message(
                 request, "You already have an application.", 'danger', 'blnk_main:index')
         if Bank_loan.objects.filter(customer=current_user.customer).exists():
-            return display_message(
-                request, "You already have an active loan.", 'danger', 'blnk_main:index')
+            bank_loan = Bank_loan.objects.get(customer=current_user.customer)
+            if bank_loan.loan.loan_type == 'Loans':
+                return display_message(
+                    request, "You already have an active loan.", 'danger', 'blnk_main:index')
 
         form = LoanAppForm(request.POST)
         if form.is_valid():

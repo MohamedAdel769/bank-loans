@@ -12,11 +12,11 @@ def register_loan(request, app_id):
         raise PermissionDenied
 
     app = Loan_app.objects.get(id=app_id)
-
+    bank = Bank.objects.first()  # there is only one bank now
     # check bank balance if it is a LOAN
-    LOAN_APP = True
+
+    LOAN_APP = True if app.loan.loan_type == 'Loans' else False
     if LOAN_APP:
-        bank = Bank.objects.first()
         if not bank.check_balance(app.amount):
             messages.error(
                 request, 'Error! There is not enough fund', extra_tags='danger')
@@ -29,12 +29,12 @@ def register_loan(request, app_id):
     # create bank loan
     Bank_loan.objects.create(
         customer=app.user.customer,
-        loan_info=app.loan,
+        loan=app.loan,
         amount=app.amount,
         bank=bank,
     )
     messages.success(
-        request, 'Loan Registered Successfully')
+        request, f'{app.loan.loan_type} Registered Successfully')
 
     # remove loan from loan apps
     Loan_app.objects.filter(id=app_id).delete()

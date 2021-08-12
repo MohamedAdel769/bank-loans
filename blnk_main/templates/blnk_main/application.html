@@ -1,5 +1,4 @@
-{% extends "blnk_main/base.html" %} {% load crispy_forms_tags %} 
-{% block content %}
+{% extends "blnk_main/base.html" %} {% load crispy_forms_tags %} {% block content %}
 
 <article class="media content-section">
   <div class="media-body">
@@ -10,6 +9,7 @@
       </p>
     </div>
     <p class="article-content">Interest: {{ loan.interest_rate }}%</p>
+    <p class="article-content">Plan: {{ loan.loan_type }}</p>
     <a
       class="btn btn-outline-danger"
       href="{% url 'blnk_main:index' %}"

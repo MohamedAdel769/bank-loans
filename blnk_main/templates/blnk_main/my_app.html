@@ -10,6 +10,7 @@
     </div>
     <p class="article-content">Interest: {{ loan.interest_rate }}%</p>
     <p class="article-content">Amount: {{ app.amount }} EGP</p>
+    <p class="article-content">Plan: {{ loan.loan_type }}</p>
     {% if status is True %}
     <div class="alert alert-success">Approved - {{ app.bank }} Bank</div>
     {% else %}
