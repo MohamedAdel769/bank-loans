@@ -11,7 +11,7 @@
     <p class="article-content">Interest: {{ loan.interest_rate }}%</p>
     <p class="article-content">Amount: {{ app.amount }} EGP</p>
     {% if status is True %}
-    <div class="alert alert-success">Approved</div>
+    <div class="alert alert-success">Approved - {{ app.bank }} Bank</div>
     {% else %}
     <div class="alert alert-warning">Pending Approval</div>
     {% endif %}

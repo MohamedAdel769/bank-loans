@@ -21,14 +21,14 @@ class Loan(models.Model):
     interest_rate = models.FloatField()
     duration = models.IntegerField()
 
+    types = (('Funds', 'Funds'), ('Loans', 'Loans'))
+    loan_type = models.CharField(max_length=5, choices=types, default='Loans')
+
     def __str__(self):
         return f"{self.min_val} - {self.max_val}, {self.interest_rate}"
 
 
 class Loan_app(models.Model):
-    types = (('Fund', 'Fund'), ('Loan', 'Loan'))
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE)
-    app_type = models.CharField(max_length=10, choices=types, default='Loan')
     amount = models.IntegerField()

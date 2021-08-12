@@ -20,6 +20,9 @@
     {% else %}
     <title>blnk</title>
     {% endif %}
+
+    {% block scripts %} {% endblock %}
+
   </head>
   <body>
     <header class="site-header">
@@ -75,16 +78,9 @@
                 <h3> Guest </h3>
               {% endif %}
               <p class='text-muted'>Check features below.
-                <!-- <ul class="list-group list-group-flush">
-                  <a href="{% url 'blnk_main:myApplication' %}" class="list-group-item list-group-item-action">My Applications</a>
-                </ul>
-                {% if user.username == 'banker' %}
-                <ul class="list-group">
-                  <a href="{% url 'bank_system:bankLoans' %}" class="list-group-item list-group-item-action">Bank Loans</a>
-                </ul>
-                {% endif %} -->
                 <div class="list-group list-group-flush">
                   <a class="list-group-item" href="{% url 'blnk_main:myApplication' %}">My Applications</a>
+                  <a class="list-group-item" href="{% url 'blnk_main:activeApplication' %}">Active Applications</a>
                   {% if user.username == 'banker' %}
                   <a class="list-group-item" href="{% url 'bank_system:bankLoans' %}">Bank Loans</a>
                   {% endif %}

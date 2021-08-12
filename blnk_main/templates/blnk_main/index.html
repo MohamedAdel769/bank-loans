@@ -1,21 +1,72 @@
-{% extends "blnk_main/base.html" %} {% block content %} {% for loan in loans %}
+{% extends "blnk_main/base.html" %} {% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script>
+  function get_plan() {
+    var selected_plan = planForm.plan_select.value;
+    document.getElementById("current-plan").innerHTML =
+      "Available " + selected_plan + " Plans";
 
-<article class="media content-section">
-  <div class="media-body">
-    <div class="article-metadata">
-      <h2 class="mr-2">Duration: {{ loan.duration }} Months</h2>
-      <p class="text-muted">
-        Min: {{ loan.min_val }} EGP - Max: {{ loan.max_val }} EGP
-      </p>
-    </div>
-    <p class="article-content">Interest: {{ loan.interest_rate }}%</p>
-    <a
-      class="btn btn-outline-primary"
-      href="{% url 'blnk_main:application' loan.id %}"
-      role="button"
-      >Apply for this loan</a
-    >
-  </div>
-</article>
+    let data = new FormData();
+    data.append("plan", selected_plan);
+    data.append("csrfmiddlewaretoken", "{{csrf_token}}");
 
-{% endfor %} {% endblock content%}
+    let plans = "";
+
+    axios
+      .post("filter_plans/", data)
+      .then((respone) => {
+        var loans = respone.data;
+        /* const plans = JSON.parse(loans); */
+        let link = document.getElementById("main-content").innerHTML;
+        for (let i = 0; i < loans.length; i++) {
+          let loan = loans[i];
+          plans +=
+            "<article class='media content-section'>" +
+            "<div class='media-body'>" +
+            "<div class='article-metadata'>" +
+            "<h2 class='mr-2'>Duration: " +
+            loan.duration +
+            " Months</h2>" +
+            "<p class='text-muted'>Min: " +
+            loan.min_val +
+            " EGP - Max: " +
+            loan.max_val +
+            " EGP </p>" +
+            "</div> <p class='article-content'>Interest: " +
+            loan.interest_rate +
+            "% </p>" +
+            link +
+            " </div> </article>";
+        }
+
+        document.getElementById("main-content").innerHTML = plans;
+      })
+      .catch((errors) => console.log(errors));
+  }
+</script>
+{% endblock scripts %} {% block content %}
+<h1 id="current-plan">Available Loans Plans</h1>
+<form name="planForm" action="">
+  <select
+    name="plan_select"
+    onchange="get_plan()"
+    class="form-select form-select-lg mb-3"
+    aria-label=".form-select-lg example"
+  >
+    <option value="Loans" selected>Loans</option>
+    <option value="Funds">Funds</option>
+  </select>
+</form>
+
+<div id="main-content">
+  {% for loan in loans %}
+  <a
+    href="{% url 'blnk_main:application' loan.id %}"
+    class="loan-id btn btn-outline-primary"
+  >
+    Apply for this loan
+  </a>
+  {% endfor %}
+</div>
+
+{% endblock content%}
