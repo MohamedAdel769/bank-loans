@@ -55,6 +55,7 @@ def add_application(request, loan_id):
         if Loan_app.objects.filter(user=current_user).exists():
             return display_message(
                 request, "You already have an application.", 'danger', 'blnk_main:index')
+
         if Bank_loan.objects.filter(customer=current_user.customer).exists():
             bank_loans = Bank_loan.objects.filter(
                 customer=current_user.customer)
